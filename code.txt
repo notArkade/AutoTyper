@@ -1,0 +1,51 @@
+import java.util.*;
+import java.util.Scanner;
+
+public class InsertData {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        int[] array = new int[10];
+
+        System.out.print("Enter N (number of elements): ");
+        int n = scanner.nextInt();
+
+        System.out.println("Enter " + n + " elements:");
+        for (int i = 0; i < n; i++) {
+            array[i] = scanner.nextInt();
+        }
+
+        try {
+            System.out.print("Enter Position to insert data: ");
+            int position = scanner.nextInt();
+            if (position < 0 || position >= 10) {
+                throw new ArrayIndexOutOfBoundsException("Position is out of bounds");
+            }
+
+            System.out.print("Enter Data to insert: ");
+            int data = scanner.nextInt();
+
+            if (n == 10) {
+                // If array is full, replace data of last position
+                array[9] = data;
+                System.out.println("Array is already full. Replaced data of last position with new data.");
+            } else {
+                // Insert data at given position
+                for (int i = n; i > position; i--) {
+                    array[i] = array[i - 1];
+                }
+                array[position] = data;
+                n++;
+                System.out.println("Data inserted at position " + position);
+            }
+
+            System.out.println("Array after insertion:");
+            for (int i = 0; i < n; i++) {
+                System.out.print(array[i] + " ");
+            }
+        } catch (ArrayIndexOutOfBoundsException e) {
+            System.out.println("Error: " + e.getMessage());
+        } finally {
+            scanner.close();
+        }
+    }
+}
