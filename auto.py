@@ -6,13 +6,12 @@ def autotype_code(code):
     time.sleep(5)  # Adjust the delay as needed
     
     # Type the code
-    pyautogui.typewrite(code)
+    pyautogui.typewrite(code, interval=0.01)
 
 def main():
     # Read the code from a text file
     with open("code.txt", "r") as file:
-        code_to_type = file.read()
-    
+        code_to_type = "\n".join(line.strip() for line in file.readlines())    
     # Call the autotype function with the code to type
     autotype_code(code_to_type)
 
