@@ -6,7 +6,7 @@ def autotype_code(code):
     time.sleep(5)  # Adjust the delay as needed
     
     # Type the code
-    pyautogui.typewrite(code, interval=0.01)
+    pyautogui.typewrite(code, interval=0.0)
 
 def main():
     # Read the code from a text file
@@ -17,3 +17,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+ 
