@@ -1,50 +1,66 @@
 #include <iostream>
-#include <cmath>
 using namespace std;
 
-// Structure to represent distances
-struct Distance {
-    int feet;
-    double inches;
+struct Node {
+    int data;
+    Node* next;
 };
 
-// Function to convert feet-inches to total inches
-double convertToInches(Distance d) {
-    return d.feet * 12 + d.inches;
+void insert(Node*& head, int data) {
+    Node* newNode = new Node();
+    newNode->data = data;
+    if (!head) {
+        head = newNode;
+        newNode->next = head;
+    } else {
+        Node* temp = head;
+        while (temp->next != head) temp = temp->next;
+        temp->next = newNode;
+        newNode->next = head;
+    }
 }
 
-// Function to convert total inches to feet-inches
-Distance convertToFeetInches(double totalInches) {
-    Distance result;
-    result.feet = totalInches / 12;
-    result.inches = fmod(totalInches, 12);
-    return result;
+void display(Node* head) {
+    if (!head) {
+        cout << "List is empty" << endl;
+        return;
+    }
+    Node* temp = head;
+    do {
+        cout << temp->data << " ";
+        temp = temp->next;
+    } while (temp != head);
+    cout << endl;
+}
+
+void deleteFirst(Node*& head) {
+    if (!head) {
+        cout << "List is empty" << endl;
+        return;
+    }
+    if (head->next == head) {
+        delete head;
+        head = nullptr;
+    } else {
+        Node* temp = head;
+        Node* last = head;
+        while (last->next != head) last = last->next;
+        last->next = head->next;
+        head = head->next;
+        delete temp;
+    }
 }
 
 int main() {
-    // Input for the first distance
-    Distance dist1;
-    cout << "Enter the feet and inches for the first distance:\n";
-    cin >> dist1.feet >> dist1.inches;
-    
-    // Input for the second distance
-    Distance dist2;
-    cout << "Enter the feet and inches for the second distance:\n";
-    cin >> dist2.feet >> dist2.inches;
-    
-    // Convert distances to inches and perform addition
-    double totalInches1 = convertToInches(dist1);
-    double totalInches2 = convertToInches(dist2);
-    
-    double resultInches = totalInches1 + totalInches2;
-    
-    // Convert result back to feet-inches
-    Distance result = convertToFeetInches(resultInches);
-    
-    // Display the distances and results in the required format
-    cout << "dist1 = " << dist1.feet << "'-" << dist1.inches << "\"\n";
-    cout << "dist2 = " << dist2.feet << "'-" << dist2.inches << "\"\n";
-    cout << "dist3 = " << result.feet << "'-" << result.inches << "\"\n";
-
+    int n, data;
+    cin >> n;
+    Node* head = nullptr;
+    while (n--) {
+        cin >> data;
+        insert(head, data);
+    }
+    display(head);
+    deleteFirst(head);
+    display(head);
     return 0;
 }
