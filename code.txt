@@ -1,66 +1,56 @@
-#include <iostream>
+#include <bits/stdc++.h>
 using namespace std;
 
 struct Node {
-    int data;
+    string data;
     Node* next;
 };
 
-void insert(Node*& head, int data) {
-    Node* newNode = new Node();
-    newNode->data = data;
-    if (!head) {
-        head = newNode;
-        newNode->next = head;
-    } else {
-        Node* temp = head;
-        while (temp->next != head) temp = temp->next;
-        temp->next = newNode;
-        newNode->next = head;
+bool detectLoop(Node* head) {
+    Node* slow = head;
+    Node* fast = head;
+    while (slow && fast && fast->next) {
+        slow = slow->next;
+        fast = fast->next->next;
+        if (slow == fast) {
+            return true;
+        }
     }
+    return false;
 }
 
-void display(Node* head) {
-    if (!head) {
-        cout << "List is empty" << endl;
-        return;
+Node* createLinkedList(int n, vector<string>& locations, string loopLocation) {
+    Node* head = new Node{locations[0], nullptr};
+    Node* tail = head;
+    Node* loopNode = nullptr;
+    for (int i = 1; i < n; i++) {
+        Node* newNode = new Node{locations[i], nullptr};
+        tail->next = newNode;
+        tail = newNode;
+        if (locations[i] == loopLocation) {
+            loopNode = newNode;
+        }
     }
-    Node* temp = head;
-    do {
-        cout << temp->data << " ";
-        temp = temp->next;
-    } while (temp != head);
-    cout << endl;
-}
-
-void deleteFirst(Node*& head) {
-    if (!head) {
-        cout << "List is empty" << endl;
-        return;
+    if (loopLocation != "none") {
+        tail->next = loopNode;
     }
-    if (head->next == head) {
-        delete head;
-        head = nullptr;
-    } else {
-        Node* temp = head;
-        Node* last = head;
-        while (last->next != head) last = last->next;
-        last->next = head->next;
-        head = head->next;
-        delete temp;
-    }
+    return head;
 }
 
 int main() {
-    int n, data;
+    int n;
     cin >> n;
-    Node* head = nullptr;
-    while (n--) {
-        cin >> data;
-        insert(head, data);
+    vector<string> locations(n);
+    for (int i = 0; i < n; i++) {
+        cin >> locations[i];
     }
-    display(head);
-    deleteFirst(head);
-    display(head);
+    string loopLocation;
+    cin >> loopLocation;
+    Node* head = createLinkedList(n, locations, loopLocation);
+    if (detectLoop(head)) {
+        cout << "Loop detected" << endl;
+    } else {
+        cout << "No loop detected" << endl;
+    }
     return 0;
 }
