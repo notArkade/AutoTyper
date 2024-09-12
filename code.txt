@@ -1,56 +1,61 @@
-#include <bits/stdc++.h>
+#include <iostream>
+#include <string>
+#include <unordered_set>
+
 using namespace std;
 
 struct Node {
-    string data;
+    string location;
     Node* next;
 };
 
-bool detectLoop(Node* head) {
-    Node* slow = head;
-    Node* fast = head;
-    while (slow && fast && fast->next) {
-        slow = slow->next;
-        fast = fast->next->next;
-        if (slow == fast) {
-            return true;
-        }
-    }
-    return false;
-}
-
-Node* createLinkedList(int n, vector<string>& locations, string loopLocation) {
-    Node* head = new Node{locations[0], nullptr};
-    Node* tail = head;
-    Node* loopNode = nullptr;
-    for (int i = 1; i < n; i++) {
-        Node* newNode = new Node{locations[i], nullptr};
-        tail->next = newNode;
-        tail = newNode;
-        if (locations[i] == loopLocation) {
-            loopNode = newNode;
-        }
-    }
-    if (loopLocation != "none") {
-        tail->next = loopNode;
-    }
-    return head;
-}
-
 int main() {
-    int n;
-    cin >> n;
-    vector<string> locations(n);
-    for (int i = 0; i < n; i++) {
-        cin >> locations[i];
+    int N;
+    cin >> N;
+
+    Node* head = nullptr;
+    Node* tail = nullptr;
+    for (int i = 0; i < N; i++) {
+        string location;
+        cin >> location;
+        Node* node = new Node();
+        node->location = location;
+        node->next = nullptr;
+        if (head == nullptr) {
+            head = node;
+            tail = node;
+        } else {
+            tail->next = node;
+            tail = node;
+        }
     }
+
     string loopLocation;
     cin >> loopLocation;
-    Node* head = createLinkedList(n, locations, loopLocation);
-    if (detectLoop(head)) {
-        cout << "Loop detected" << endl;
-    } else {
-        cout << "No loop detected" << endl;
+    if (loopLocation != "none") {
+        Node* temp = head;
+        while (temp->next != nullptr) {
+            temp = temp->next;
+        }
+        temp->next = head;
+        for (Node* curr = head; curr != nullptr; curr = curr->next) {
+            if (curr->location == loopLocation) {
+                temp->next = curr;
+                break;
+            }
+        }
     }
+
+    unordered_set<Node*> visited;
+    Node* curr = head;
+    while (curr != nullptr) {
+        if (visited.find(curr) != visited.end()) {
+            cout << "Loop detected" << endl;
+            return 0;
+        }
+        visited.insert(curr);
+        curr = curr->next;
+    }
+    cout << "No loop detected" << endl;
     return 0;
 }
