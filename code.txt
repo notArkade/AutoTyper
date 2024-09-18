@@ -1,7 +1,5 @@
 #include <iostream>
 #include <vector>
-#include <cmath> // for pow function
-
 using namespace std;
 
 struct Term {
@@ -10,80 +8,54 @@ struct Term {
 };
 
 int main() {
-    int numTerms;
-    cout << "Enter the number of terms in the polynomial (e.g., 2): ";
-    cin >> numTerms;
-
-    if (numTerms == 0) {
-        cout << "Polynomial is empty." << endl;
+    int n;
+    cin >> n;
+    
+    if (n == 0) {
+        cout << "Empty Polynomial" << endl;
         return 0;
     }
-
-    vector<Term> polynomial(numTerms);
-    int sumExponents = 0;
-    int sumCoefficients = 0;
-    string polynomialStr = "";
-
-    cout << "Enter the coefficient and exponent for each term (e.g., 5 2 for 5x^2): ";
-    for (int i = 0; i < numTerms; ++i) {
-        cin >> polynomial[i].coefficient >> polynomial[i].exponent;
-        sumExponents += polynomial[i].exponent;
-        sumCoefficients += polynomial[i].coefficient;
-
-        // Constructing the polynomial expression as a string
-        if (polynomial[i].coefficient != 0) {
-            if (i > 0 && polynomial[i].coefficient > 0) {
-                polynomialStr += " + ";
-            } else if (i > 0 && polynomial[i].coefficient < 0) {
-                polynomialStr += " - ";
-            } else if (polynomial[i].coefficient < 0) {
-                polynomialStr += "-";
-            }
-            
-            if (abs(polynomial[i].coefficient) != 1 || polynomial[i].exponent == 0) {
-                polynomialStr += to_string(abs(polynomial[i].coefficient));
-            }
-            
-            if (polynomial[i].exponent != 0) {
-                polynomialStr += "x";
-                if (polynomial[i].exponent != 1) {
-                    polynomialStr += "^" + to_string(polynomial[i].exponent);
-                }
-            }
+    
+    vector<Term> polynomial;
+    int maxExponent = -1;
+    bool nonZeroTerm = false;
+    
+    for (int i = 0; i < n; i++) {
+        int coefficient, exponent;
+        cin >> coefficient >> exponent;
+        polynomial.push_back({coefficient, exponent});
+        if (coefficient != 0) {
+            maxExponent = max(maxExponent, exponent);
+            nonZeroTerm = true;
         }
     }
-
-    if (sumCoefficients == 0) {
-        cout << "Polynomial: zero, Operation not possible." << endl;
-        return 0;
-    }
-
-    if (sumExponents == 0) {
-        cout << "Sum of exponents is zero, divisibility check not applicable." << endl;
-        return 0;
-    }
-
-    // Display the constructed polynomial
-    cout << "Polynomial: " << polynomialStr << endl;
-
-    // Now ask for the value of x
-    int x;
-    cout << "Enter the value of x: ";
-    cin >> x;
-
-    int result = 0;
-    for (int i = 0; i < numTerms; ++i) {
-        result += polynomial[i].coefficient * pow(x, polynomial[i].exponent);
-    }
-
-    cout << "Value of x: " << x << endl;
-    cout << "For x = " << x << ", the evaluated result is " << result << endl;
     
-    if (result % sumExponents == 0) {
-        cout << "The evaluated result " << result << " is divisible by the sum of exponents " << sumExponents << "." << endl;
-    } else {
-        cout << "The evaluated result " << result << " is not divisible by the sum of exponents " << sumExponents << "." << endl;
+    if (!nonZeroTerm) {
+        for (auto term : polynomial) {
+            cout << term.coefficient << "x^" << term.exponent;
+            if (term.exponent != polynomial.back().exponent) {
+                cout << " + ";
+            }
+        }
+        cout << endl;
+        cout << "1" << endl;
+        return 0;
     }
-
+    
+    bool firstTerm = true;
+    for (int i = 0; i < n; i++) {
+        if (!firstTerm && polynomial[i].coefficient >= 0) {
+            cout << " + ";
+        }
+        if (polynomial[i].exponent == 0) {
+            cout << polynomial[i].coefficient;
+        } else {
+            cout << polynomial[i].coefficient << "x^" << polynomial[i].exponent;
+        }
+        firstTerm = false;
+    }
+    
+    cout << endl;
+    cout << maxExponent << endl;
     return 0;
 }
