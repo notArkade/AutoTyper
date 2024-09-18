@@ -1,0 +1,89 @@
+#include <iostream>
+#include <vector>
+#include <cmath> // for pow function
+
+using namespace std;
+
+struct Term {
+    int coefficient;
+    int exponent;
+};
+
+int main() {
+    int numTerms;
+    cout << "Enter the number of terms in the polynomial (e.g., 2): ";
+    cin >> numTerms;
+
+    if (numTerms == 0) {
+        cout << "Polynomial is empty." << endl;
+        return 0;
+    }
+
+    vector<Term> polynomial(numTerms);
+    int sumExponents = 0;
+    int sumCoefficients = 0;
+    string polynomialStr = "";
+
+    cout << "Enter the coefficient and exponent for each term (e.g., 5 2 for 5x^2): ";
+    for (int i = 0; i < numTerms; ++i) {
+        cin >> polynomial[i].coefficient >> polynomial[i].exponent;
+        sumExponents += polynomial[i].exponent;
+        sumCoefficients += polynomial[i].coefficient;
+
+        // Constructing the polynomial expression as a string
+        if (polynomial[i].coefficient != 0) {
+            if (i > 0 && polynomial[i].coefficient > 0) {
+                polynomialStr += " + ";
+            } else if (i > 0 && polynomial[i].coefficient < 0) {
+                polynomialStr += " - ";
+            } else if (polynomial[i].coefficient < 0) {
+                polynomialStr += "-";
+            }
+            
+            if (abs(polynomial[i].coefficient) != 1 || polynomial[i].exponent == 0) {
+                polynomialStr += to_string(abs(polynomial[i].coefficient));
+            }
+            
+            if (polynomial[i].exponent != 0) {
+                polynomialStr += "x";
+                if (polynomial[i].exponent != 1) {
+                    polynomialStr += "^" + to_string(polynomial[i].exponent);
+                }
+            }
+        }
+    }
+
+    if (sumCoefficients == 0) {
+        cout << "Polynomial: zero, Operation not possible." << endl;
+        return 0;
+    }
+
+    if (sumExponents == 0) {
+        cout << "Sum of exponents is zero, divisibility check not applicable." << endl;
+        return 0;
+    }
+
+    // Display the constructed polynomial
+    cout << "Polynomial: " << polynomialStr << endl;
+
+    // Now ask for the value of x
+    int x;
+    cout << "Enter the value of x: ";
+    cin >> x;
+
+    int result = 0;
+    for (int i = 0; i < numTerms; ++i) {
+        result += polynomial[i].coefficient * pow(x, polynomial[i].exponent);
+    }
+
+    cout << "Value of x: " << x << endl;
+    cout << "For x = " << x << ", the evaluated result is " << result << endl;
+    
+    if (result % sumExponents == 0) {
+        cout << "The evaluated result " << result << " is divisible by the sum of exponents " << sumExponents << "." << endl;
+    } else {
+        cout << "The evaluated result " << result << " is not divisible by the sum of exponents " << sumExponents << "." << endl;
+    }
+
+    return 0;
+}
