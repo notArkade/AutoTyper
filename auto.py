@@ -3,7 +3,7 @@ import time
 
 def autotype_code(code):
     # Give some time to switch to the target window or tab
-    time.sleep(40)  # Adjust the delay as needed
+    time.sleep(5)  # Adjust the delay as needed
     
     # Type the code
     pyautogui.typewrite(code, interval=0.0)
