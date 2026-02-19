@@ -1,0 +1,1 @@
+alpha = float(input("Enter Alpha value (0—1): "))

@@ -1,0 +1,83 @@
+import math
+import numpy as np
+
+
+def triangular(x, a, b, c):
+    if x <= a or x >= c:
+        return 0.0
+    elif a < x < b:
+        return (x - a) / (b - a)
+    elif x == b:
+        return 1.0
+    else:
+        return (c - x) / (c - b)
+
+
+def trapezoidal(x, a, b, c, d):
+    if x <= a or x >= d:
+        return 0.0
+    elif a < x < b:
+        return (x - a) / (b - a)
+    elif b <= x <= c:
+        return 1.0
+    else:
+        return (d - x) / (d - c)
+
+
+def gaussian(x, mean, sigma):
+    return math.exp(-0.5 * ((x - mean) / sigma) ** 2)
+
+
+def is_normal(values):
+    return max(values) == 1.0
+
+
+def is_convex(values):
+    for i in range(1, len(values) - 1):
+        if values[i] < min(values[i - 1], values[i + 1]):
+            return False
+    return True
+
+
+print("SMART AIR POLLUTION EVALUATION SYSTEM")
+
+min_aqi = float(input("Enter minimum AQI value: "))
+max_aqi = float(input("Enter maximum AQI value: "))
+
+a, b, c = map(float, input("Enter Triangular MF parameters (a b c): ").split())
+a1, b1, c1, d1 = map(float, input("Enter Trapezoidal MF parameters (a b c d): ").split())
+
+mean = float(input("Enter Gaussian mean: "))
+sigma = float(input("Enter Gaussian sigma: "))
+
+alpha = float(input("Enter Alpha value (0—1): "))
+
+print("-------------RESULTS-------------")
+
+x_values = np.linspace(min_aqi, max_aqi, 1000)
+
+tri_values = [triangular(x, a, b, c) for x in x_values]
+trap_values = [trapezoidal(x, a1, b1, c1, d1) for x in x_values]
+gauss_values = [gaussian(x, mean, sigma) for x in x_values]
+
+print("Triangular Normal:", is_normal(tri_values))
+print("Trapezoidal Normal:", is_normal(trap_values))
+print("Gaussian Normal:", is_normal([round(v, 2) for v in gauss_values]))
+
+print("Triangular Convex:", is_convex(tri_values))
+print("Trapezoidal Convex:", is_convex(trap_values))
+print("Gaussian Convex:", True)
+
+tri_alpha = [round(x, 2) for x, mu in zip(x_values, tri_values) if mu >= alpha][:10]
+trap_alpha = [round(x, 2) for x, mu in zip(x_values, trap_values) if mu >= alpha][:10]
+gauss_alpha = [round(x, 2) for x, mu in zip(x_values, gauss_values) if mu >= alpha][:10]
+
+print("Alpha-cut Outputs (first 10 values):")
+print("Triangular:", tri_alpha)
+print("Trapezoidal:", trap_alpha)
+print("Gaussian:", gauss_alpha)
+
+print("Performance Comparison:")
+print("Triangular -> Simple, Computationally Fast, Less Smooth")
+print("Trapezoidal -> Stable Plateau Region, Moderate Precision")
+print("Gaussian -> Smooth Curve, High Precision, Real-world Suitable")
